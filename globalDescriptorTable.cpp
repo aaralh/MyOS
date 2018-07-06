@@ -3,8 +3,8 @@
 GlobalDescriptorTable::GlobalDescriptorTable()
     : nullSegmentSelector(0, 0, 0),
       unusedSegmentSelector(0, 0, 0),
-      codeSegmentSelector(0, 64 * 1024 * 1024, 0x9A),
-      dataSegmentSelector(0, 64 * 1024 * 1024, 0x9A)
+      codeSegmentSelector(0, 64 * 1024 * 1024, 0x9A), // This selector will be our code.
+      dataSegmentSelector(0, 64 * 1024 * 1024, 0x9A) // This selector will be our data.
 {
 
     uint32_t i[2];
@@ -35,12 +35,15 @@ GlobalDescriptorTable::SegmentDescriptor::SegmentDescriptor(uint32_t base, uint3
 
     uint8_t *target = (uint8_t *)this;
 
+    // Check if we are woprking on 16-bit or 32-bit address space.
     if (limit <= 65536)
     {
+        // 16-bit.
         target[6] = 0x40;
     }
     else
     {
+        // 32-bit.
         if ((limit & 0xFFF) != 0xFFF)
         {
             limit = (limit >> 12) - 1;
@@ -53,10 +56,12 @@ GlobalDescriptorTable::SegmentDescriptor::SegmentDescriptor(uint32_t base, uint3
         target[6] = 0xC0;
     }
 
+    // Encode the limit
     target[0] = limit & 0xFF;
     target[1] = limit >> 8 & 0xFF;
     target[6] |= (limit >> 16) & 0xF;
 
+    // Encode the base
     target[2] = base & 0xFF;
     target[3] = (base >> 8) & 0xFF;
     target[4] = (base >> 16) & 0xFF;
