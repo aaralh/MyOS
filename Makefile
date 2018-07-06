@@ -2,7 +2,7 @@ GPPPARAMS = -m32 -fno-use-cxa-atexit -nostdlib -fno-builtin -fno-rtti -fno-excep
 ASPARAMS = --32
 LDPARAMS = -melf_i386
 
-objects = loader.o kernel.o
+objects = loader.o globalDescriptorTable.o kernel.o
 
 %.o: %.cpp
 		gcc $(GPPPARAMS) -o $@ -c $<
@@ -17,9 +17,7 @@ install: kernel.bin
 		sudo cp $< /boot/kernel.bin
 
 kernel.iso: kernel.bin
-	mkdir iso
-	mkdir iso/boot
-	mkdir iso/boot/grub
+	mkdir -p iso/boot/grub
 	cp $< iso/boot/
 	echo 'set timeout=0' >> iso/boot/grub/grub.cfg
 	echo 'set default=0' >> iso/boot/grub/grub.cfg
