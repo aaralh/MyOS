@@ -1,19 +1,10 @@
 #include "screen.h"
 
-int8_t Screen::y; // Line position.
-int8_t Screen::x; // Character position at the line.
+int8_t y = 0; // Line position.
+int8_t x = 0; // Character position at the line.
 uint16_t* VideoMemory = (uint16_t*)0xb8000; // Location of text mode
 
-
-Screen::Screen() {
-    Screen::y = 0;
-    Screen::x = 0;
-}
-
-Screen::~Screen(){
-}
-
-void Screen::printf(char* str){
+void printf(char* str){
 
     for(int i = 0; str[i] != '\0'; ++i) {
 
@@ -48,7 +39,7 @@ void Screen::printf(char* str){
     }
 }
 
-void Screen::clearScreen(){
+void clearScreen(){
 
     for(int8_t line = 1; line < 26; line++) {
         for(int8_t character = 0; character < 80; character++) {
